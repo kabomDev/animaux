@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les personnes{% endblock %}
+{% block monTitle %}Liste des personnes{% endblock %}
+
+{% block body %}
+    {% for personne in personnes %}
+        <h2 class="pl-3 border-bottom border-secondary"><a href="{{path('afficher_personne',{'id': personne.id})}}" class="text-success">{{personne.nom}}</a></h2>
+        <h3>Liste des animaux possédés:</h3>
+        {% for dispose in personne.disposes %}
+            <div class="row align-items-center">
+                <div class="col-sm-2 col-xs-6 text-center m-2">
+                    <img src="{{asset('images/'~ dispose.animal.image)}}">
+                </div>
+                <div class="col col-xs-6 m-2">
+                    <h3><a href="{{path('afficher_animal',{'id': dispose.animal.id})}} ">{{ dispose.animal.nom }}</a></h3>
+                    <p> {{ dispose.animal.description }} </p>
+                    <p>en dispose de: {{dispose.nb}}</p>
+                    <div>
+                        <a href="{{path('afficher_famille',{'id': dispose.animal.famille.id})}}" class="btn btn-primary">{{dispose.animal.famille.libelle}}</a>
+                    </div>
+                    <div>
+                        {% for continent in dispose.animal.continents %}
+                            <a href="{{path('afficher_continent',{'id': continent.id})}}" class="btn btn-success mt-3">{{continent.libelle}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,58 @@
+version: '3.8'
+
+networks:
+  custom_network:
+    driver: bridge
+
+services:
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GITHUB_REPO_URL: ${GITHUB_REPO_URL}
+    container_name: animaux-apache-1
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "80:80"
+      - "9003:9003"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@animaux-db-1:3306/${DATABASE_NAME}?serverVersion=5.7
+    networks:
+      - custom_network
+
+  db:
+    image: mysql:8.0
+    container_name: animaux-db-1
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3307:3306"
+    networks:
+      - custom_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: animaux-phpmyadmin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8080:80"
+    restart: always
+    networks:
+      - custom_network
+
+volumes:
+  db_data:

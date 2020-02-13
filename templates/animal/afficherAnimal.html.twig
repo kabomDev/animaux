@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Affichage de l'animal{% endblock %}
+{% block monTitle %}Voici l'animal {{ animal.nom }}{% endblock %}
+{% block body %}
+    <div class="row align-items-center">
+        <div class="col-2 text-center m-2">
+            <img src="{{asset('images/'~ animal.image)}}">
+        </div>
+        <div class="col m-2">
+            <p> {{ animal.description }} </p>
+            <p>Poids: {{animal.poids}}</p>
+            {% if animal.dangereux %}
+                <p>Dangereux: <span class="badge badge-danger">oui</span></p>
+            {% else %}
+                <p>Dangereux: <span class="badge badge-success">non</span></p>
+            {% endif %}
+            <div>
+                <a href="{{path('afficher_famille',{'id': animal.famille.id})}}" class="btn btn-primary">{{animal.famille.libelle}}</a>
+            </div>
+            <div>
+                {% for continent in animal.continents %}
+                    <a href="{{path('afficher_continent',{'id': continent.id})}}" class="btn btn-success mt-3">{{continent.libelle}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
